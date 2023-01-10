@@ -1,44 +1,64 @@
-import state from "./functions.js";
-const { users, queue } = state;
+import {
+  usersGet,
+  usersAdd,
+  usersRemove,
+  usersDisconnect,
+  queueAdd,
+  queueRemove,
+  matchedAccept,
+  matchedDecline,
+  tryToMatch,
+} from "./functions.js";
+
+const matching = (io) => {
+  const response = tryToMatch();
+  if (response) {
+    const [first, second] = response;
+    io.to(first.socketId).emit("matched", second.name);
+    io.to(second.socketId).emit("matched", first.name);
+  }
+};
 
 const socket = (io) => {
   io.on("connection", (socket) => {
     socket.on("join", (name) => {
-      const status = users.add(name, socket.id);
-      if (!status) {
+      const isLoggedIn = usersAdd(name, socket.id);
+      if (isLoggedIn) {
         socket.emit("server");
       } else {
-        io.emit("users", users.get());
+        io.emit("users", usersGet());
       }
     });
     socket.on("leave", (name) => {
-      users.remove(name);
-      io.emit("users", users.get());
+      usersRemove(name);
+      io.emit("users", usersGet());
     });
 
     socket.on("queue-add", (name) => {
-      const response = queue.add(name, socket.id);
-      if (response) {
-        const [first, second] = response;
-        io.to(first.socketId).emit("matched", second.name);
-        io.to(second.socketId).emit("matched", first.name);
-      }
+      queueAdd(name);
+      matching(io);
     });
     socket.on("queue-remove", (name) => {
-      queue.remove(name);
+      queueRemove(name);
     });
     socket.on("queue-accept", (name) => {
-      const { isStart, socketId } = queue.accept(name);
+      const response = matchedAccept(name);
+      const { isStart, opponentSocketId } = response;
       if (isStart) {
         socket.emit("game");
-        io.to(socketId).emit("game");
+        io.to(opponentSocketId).emit("game");
       } else {
-        io.to(socketId).emit("ready");
+        io.to(opponentSocketId).emit("ready");
       }
     });
     socket.on("queue-decline", (name) => {
-      const socketId = queue.decline(name);
-      io.to(socketId).emit("decline");
+      const response = matchedDecline(name);
+      if (response) {
+        const { opponentName, opponentSocketId } = response;
+        io.to(opponentSocketId).emit("decline");
+        queueAdd(opponentName);
+        matching(io);
+      }
     });
 
     socket.on("friends-add", (name) => {
@@ -91,8 +111,8 @@ const socket = (io) => {
     });
 
     socket.on("disconnect", () => {
-      users.disconnect(socket.id);
-      io.emit("users", users.get());
+      usersDisconnect(socket.id);
+      io.emit("users", usersGet());
     });
   });
 };
