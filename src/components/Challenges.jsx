@@ -1,11 +1,31 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useStore } from "../store";
 
 const Challenges = () => {
+  const navigate = useNavigate();
+  const [{ socket, self }, dispatch] = useStore();
   const [challenges, setChallenges] = useState([]);
 
-  const handleAcceptChallenges = () => {};
+  useEffect(() => {
+    socket.on("challenges-add", (name) => {
+      setChallenges((prev) => [name, ...prev]);
+    });
+    socket.on("challenges-remove", (name) => {
+      setChallenges((prev) => prev.filter((item) => item !== name));
+    });
+  }, [socket]);
 
-  const handleDeclineChallenges = () => {};
+  const handleAcceptChallenges = (name) => {
+    setChallenges((prev) => prev.filter((item) => item !== name));
+    dispatch({ type: "CHANGE_OPPONENT", payload: { name } });
+    navigate("/challenge");
+  };
+
+  const handleDeclineChallenges = (name) => {
+    setChallenges((prev) => prev.filter((item) => item !== name));
+    socket.emit("challenges-decline", name);
+  };
 
   return (
     <div className="flex flex-col gap-2 max-h-36 overflow-auto">

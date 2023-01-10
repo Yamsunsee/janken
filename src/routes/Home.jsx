@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { LINES } from "../utils/constants";
 
 const Home = () => {
+  const navigate = useNavigate();
   const [isDone, setDone] = useState(false);
   const lineElements = useMemo(() => document.getElementsByClassName("line"), []);
 
@@ -34,16 +35,24 @@ const Home = () => {
     setDone(true);
   };
 
+  const handleJoinQueue = () => {
+    navigate("/queue");
+  };
+
+  const handleCreateRoom = () => {
+    navigate("/room");
+  };
+
   return (
     <div className="grid grid-rows-[auto_1fr]">
       <div className="flex items-center p-8 border-b">
         <div className="flex items-center gap-16">
-          <Link to="/queue">
-            <div className="button">Play now</div>
-          </Link>
-          <Link to="/room">
-            <div className="item">Create room</div>
-          </Link>
+          <div onClick={handleJoinQueue} className="button">
+            Play now
+          </div>
+          <div onClick={handleCreateRoom} className="item">
+            Create room
+          </div>
         </div>
       </div>
       <div className="flex flex-col justify-center items-center overflow-hidden">

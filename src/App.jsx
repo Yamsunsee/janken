@@ -1,12 +1,13 @@
 import { useStore } from "./store";
 import { useEffect, useState } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Lobby from "./routes/Lobby";
 import Home from "./routes/Home";
 import Queue from "./routes/Queue";
 import Room from "./routes/Room";
+import Challenge from "./routes/Challenge";
 import Login from "./routes/Login";
 import Game from "./routes/Game";
 
@@ -49,11 +50,12 @@ const App = () => {
               <Route path="/" element={<Home />} />
               <Route path="queue" element={<Queue />} />
               <Route path="room" element={<Room />} />
+              <Route path="challenge" element={<Challenge />} />
             </Route>
             <Route path="/login" element={<Login />} />
             <Route path="/game" element={<Game />} />
           </Routes>
-          <ToastContainer autoClose={3000} newestOnTop={true} closeOnClick pauseOnHover />
+          <ToastContainer autoClose={3000} pauseOnFocusLoss={false} newestOnTop={true} closeOnClick pauseOnHover />
         </>
       )}
     </>

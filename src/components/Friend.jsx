@@ -6,11 +6,15 @@ import { removeFriends } from "../utils";
 const Friend = ({ friend, onlineUsers }) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const [{ socket, self }, dispatch] = useStore();
-  const [invitedFriends, setInvitedFriends] = useState([]);
+  const [{ socket, self, opponent, status }, dispatch] = useStore();
   const [isShow, setShow] = useState(false);
 
   const handleChallenges = () => {
+    if (opponent.name && pathname === "/room") {
+      socket.emit("challenges-remove", { from: self.name, to: opponent.name });
+    }
+    dispatch({ type: "CHANGE_OPPONENT", payload: { name: friend.name } });
+    socket.emit("challenges-add", { from: self.name, to: friend.name });
     navigate("/room");
   };
 
@@ -37,27 +41,11 @@ const Friend = ({ friend, onlineUsers }) => {
           </div>
         </div>
       </div>
-      {pathname === "/room" ? (
-        invitedFriends.includes(friend.name) ? (
-          <div
-            className="spin flex items-center text-2xl"
-            onAnimationEnd={() => setInvitedFriends((prev) => prev.filter((item) => item !== friend.name))}
-          >
-            <ion-icon name="reload-circle"></ion-icon>
-          </div>
-        ) : (
-          <div
-            onClick={() => handleChallenges()}
-            className="flex items-center text-2xl text-[#ccc] hover:text-slate-700 cursor-pointer"
-          >
-            <ion-icon name="add-circle"></ion-icon>
-          </div>
-        )
-      ) : (
-        <div onClick={() => setShow((prev) => !prev)} className={`options ${isShow ? "show" : null}`}>
-          <ion-icon name="options"></ion-icon>
-          {isShow && (
-            <div className="options-items">
+      <div onClick={() => setShow((prev) => !prev)} className={`options ${isShow ? "show" : null}`}>
+        <ion-icon name="options"></ion-icon>
+        {isShow && (
+          <div className="options-items">
+            {pathname !== "/challenge" && friend.name !== opponent.name && status === "idle" && (
               <div
                 onClick={handleChallenges}
                 className="flex justify-between items-center px-4 py-2  italic text-[#ccc] hover:text-slate-700 cursor-pointer"
@@ -67,19 +55,19 @@ const Friend = ({ friend, onlineUsers }) => {
                   <ion-icon name="receipt"></ion-icon>
                 </div>
               </div>
-              <div
-                onClick={handleUnfriends}
-                className="flex justify-between items-center px-4 py-2  italic text-[#ccc] hover:text-slate-700 cursor-pointer"
-              >
-                <div>Unfriend</div>
-                <div className="flex items-center">
-                  <ion-icon name="trash"></ion-icon>
-                </div>
+            )}
+            <div
+              onClick={handleUnfriends}
+              className="flex justify-between items-center px-4 py-2  italic text-[#ccc] hover:text-slate-700 cursor-pointer"
+            >
+              <div>Unfriend</div>
+              <div className="flex items-center">
+                <ion-icon name="trash"></ion-icon>
               </div>
             </div>
-          )}
-        </div>
-      )}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
