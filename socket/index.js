@@ -56,9 +56,26 @@ const socket = (io) => {
       io.to(socketId).emit("friends");
     });
 
-    socket.on("challenges-add", ({ from, to }) => {});
-    socket.on("challenges-remove", ({ from, to }) => {});
-    socket.on("challenges-accept", ({ from, to }) => {});
+    socket.on("challenges-add", ({ from, to }) => {
+      const socketId = users.getSocketId(to);
+      io.to(socketId).emit("challenges-add", from);
+    });
+    socket.on("challenges-remove", ({ from, to }) => {
+      const socketId = users.getSocketId(to);
+      io.to(socketId).emit("challenges-remove", from);
+    });
+    socket.on("challenges-ready", (name) => {
+      const socketId = users.getSocketId(name);
+      io.to(socketId).emit("challenges-ready");
+    });
+    socket.on("challenges-start", (name) => {
+      const socketId = users.getSocketId(name);
+      io.to(socketId).emit("challenges-start");
+    });
+    socket.on("challenges-decline", (name) => {
+      const socketId = users.getSocketId(name);
+      io.to(socketId).emit("challenges-decline");
+    });
 
     socket.on("lock", ({ name, value }) => {
       const socketId = users.getSocketId(name);

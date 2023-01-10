@@ -3,7 +3,6 @@ let queue = [];
 
 const state = {
   users: {
-    show: () => users,
     get: () => Object.keys(users),
     getSocketId: (name) => users[name],
     add: (name, socketId) => {
@@ -21,7 +20,6 @@ const state = {
     },
   },
   queue: {
-    show: () => console.log(queue),
     add: (name, socketId) => {
       const data = { name, socketId, isReady: false };
       const waitingUser = queue.find((user) => user.length === 1);
