@@ -1,5 +1,6 @@
 import {
   usersGet,
+  usersGetSockedId,
   usersAdd,
   usersRemove,
   usersDisconnect,
@@ -28,10 +29,12 @@ const socket = (io) => {
       } else {
         io.emit("users", usersGet());
       }
+      console.log(usersGet());
     });
     socket.on("leave", (name) => {
       usersRemove(name);
       io.emit("users", usersGet());
+      console.log(usersGet());
     });
 
     socket.on("queue-add", (name) => {
@@ -62,51 +65,51 @@ const socket = (io) => {
     });
 
     socket.on("friends-add", (name) => {
-      const socketId = users.getSocketId(name);
+      const socketId = usersGetSockedId(name);
       io.to(socketId).emit("invitations");
     });
     socket.on("friends-remove", (name) => {
       socket.emit("friends");
-      const socketId = users.getSocketId(name);
+      const socketId = usersGetSockedId(name);
       io.to(socketId).emit("friends");
     });
     socket.on("friends-accept", (name) => {
       socket.emit("friends");
-      const socketId = users.getSocketId(name);
+      const socketId = usersGetSockedId(name);
       io.to(socketId).emit("friends");
     });
 
     socket.on("challenges-add", ({ from, to }) => {
-      const socketId = users.getSocketId(to);
+      const socketId = usersGetSockedId(to);
       io.to(socketId).emit("challenges-add", from);
     });
     socket.on("challenges-remove", ({ from, to }) => {
-      const socketId = users.getSocketId(to);
+      const socketId = usersGetSockedId(to);
       io.to(socketId).emit("challenges-remove", from);
     });
     socket.on("challenges-ready", (name) => {
-      const socketId = users.getSocketId(name);
+      const socketId = usersGetSockedId(name);
       io.to(socketId).emit("challenges-ready");
     });
     socket.on("challenges-start", (name) => {
-      const socketId = users.getSocketId(name);
+      const socketId = usersGetSockedId(name);
       io.to(socketId).emit("challenges-start");
     });
     socket.on("challenges-decline", (name) => {
-      const socketId = users.getSocketId(name);
+      const socketId = usersGetSockedId(name);
       io.to(socketId).emit("challenges-decline");
     });
 
     socket.on("lock", ({ name, value }) => {
-      const socketId = users.getSocketId(name);
+      const socketId = usersGetSockedId(name);
       io.to(socketId).emit("lock", value);
     });
     socket.on("next", (name) => {
-      const socketId = users.getSocketId(name);
+      const socketId = usersGetSockedId(name);
       io.to(socketId).emit("next");
     });
     socket.on("messages", ({ name, message }) => {
-      const socketId = users.getSocketId(name);
+      const socketId = usersGetSockedId(name);
       io.to(socketId).emit("messages", message);
     });
 

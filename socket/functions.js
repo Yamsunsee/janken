@@ -12,7 +12,7 @@ const usersAdd = (name, socketId) => {
 };
 const usersRemove = (name) => {
   for (const user in users) {
-    if (user.name === name) {
+    if (user === name) {
       delete users[name];
       break;
     }
@@ -84,6 +84,7 @@ const tryToMatch = () => {
 
 export {
   usersGet,
+  usersGetSockedId,
   usersAdd,
   usersRemove,
   usersDisconnect,
