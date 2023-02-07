@@ -104,11 +104,20 @@ const Queue = () => {
     navigate("/");
   };
 
+  const handleOffline = () => {
+    if (status !== "idle") return;
+    dispatch({ type: "CHANGE_OPPONENT", payload: { name: "Computer" } });
+    navigate("/computer");
+  };
+
   return (
     <div className="grid grid-rows-[auto_1fr]">
-      <div className="flex items-center p-8 border-b">
+      <div className="flex items-center p-8 border-b justify-between">
         <div onClick={handleBack} className={`button ${status === "accepted" ? "disabled" : null}`}>
           Back to home
+        </div>
+        <div onClick={handleOffline} className={`button ${status !== "idle" ? "disabled" : null}`}>
+          Play with computer
         </div>
       </div>
       <div className="grid grid-cols-[1fr_24rem_1fr]">

@@ -10,6 +10,7 @@ import Room from "./routes/Room";
 import Challenge from "./routes/Challenge";
 import Login from "./routes/Login";
 import Game from "./routes/Game";
+import Computer from "./routes/Computer";
 
 const App = () => {
   const navigate = useNavigate();
@@ -54,6 +55,7 @@ const App = () => {
             </Route>
             <Route path="/login" element={<Login />} />
             <Route path="/game" element={<Game />} />
+            <Route path="/computer" element={<Computer />} />
           </Routes>
           <ToastContainer autoClose={3000} pauseOnFocusLoss={false} newestOnTop={true} closeOnClick pauseOnHover />
         </>

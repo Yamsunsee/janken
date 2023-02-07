@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { useStore } from "../store";
 import { getResults, ICONS } from "../utils";
 
-const Game = () => {
+const Computer = () => {
   const navigate = useNavigate();
-  const [{ socket, self, opponent }, dispatch] = useStore();
+  const [{ self, opponent }, dispatch] = useStore();
   const [timer, setTimer] = useState(15);
   const [isLock, setLock] = useState(false);
   const [isNext, setNext] = useState(false);
@@ -13,8 +13,6 @@ const Game = () => {
   const [choice, setChoice] = useState("rock");
   const [selfChoices, setSelfChoices] = useState("xxxxxxxxxxxxxxx");
   const [opponentChoices, setOpponentChoices] = useState("xxxxxxxxxxxxxxx");
-  const [newOpponentChoices, setNewOpponentChoices] = useState("");
-  const [isOpponentNext, setOpponentNext] = useState(false);
   const [message, setMessage] = useState();
   const [messages, setMessages] = useState([]);
 
@@ -29,56 +27,37 @@ const Game = () => {
   }, [timer]);
 
   useEffect(() => {
-    socket.on("lock", (data) => {
-      setNewOpponentChoices(data);
-    });
-    socket.on("next", () => {
-      setOpponentNext(true);
-    });
-    socket.on("messages", (message) => {
-      setMessages((prev) => [{ isSelf: false, message }, ...prev]);
-    });
-  }, [socket]);
-
-  useEffect(() => {
     const timeoutId = !isShow && handleWaitingLock();
     return () => {
       clearTimeout(timeoutId);
     };
   }, [timer]);
 
-  useEffect(() => {
-    if (isLock && newOpponentChoices.length > 0) {
-      setShow(true);
-      setOpponentChoices(newOpponentChoices);
-    }
-  }, [isLock, newOpponentChoices]);
-
-  useEffect(() => {
-    if (isNext && isOpponentNext) {
-      setTimer(15);
-      setShow(false);
-      setLock(false);
-      setNext(false);
-      setOpponentNext(false);
-      setNewOpponentChoices("");
-    }
-  }, [isNext, isOpponentNext]);
-
   const handleChoice = (choice) => {
     if (!isLock) setChoice(choice);
+  };
+
+  const randomComputerChoice = () => {
+    const choices = ["r", "p", "s"];
+    const index = Math.floor(Math.random() * choices.length);
+    const newChoices =
+      opponentChoices.substring(0, nextTurn) + choices[index] + opponentChoices.substring(nextTurn + 1);
+    setOpponentChoices(newChoices);
+    setShow(true);
   };
 
   const handleLock = () => {
     setLock(true);
     const newChoices = selfChoices.substring(0, nextTurn) + choice.charAt(0) + selfChoices.substring(nextTurn + 1);
     setSelfChoices(newChoices);
-    socket.emit("lock", { name: opponent.name, value: newChoices });
+    randomComputerChoice();
   };
 
   const handleNext = () => {
-    setNext(true);
-    socket.emit("next", opponent.name);
+    setTimer(15);
+    setShow(false);
+    setLock(false);
+    setNext(false);
   };
 
   const handleWaitingLock = () => {
@@ -97,12 +76,30 @@ const Game = () => {
     if (key === "Enter") handleSend();
   };
 
+  const handleReply = () => {
+    const messages = [
+      "Hello!",
+      "¡Hola!",
+      "Bonjour!",
+      "Hallo!",
+      "Ciao!",
+      "Olá!",
+      "你好!",
+      "こんにちは!",
+      "안녕하세요!",
+      "Xin chào!",
+    ];
+    const index = Math.floor(Math.random() * messages.length);
+    const message = messages[index];
+    setMessages((prev) => [{ isSelf: false, message }, ...prev]);
+  };
+
   const handleSend = () => {
     const newMessage = message.trim();
     if (newMessage.trim().length < 1) return;
-    socket.emit("messages", { name: opponent.name, message: newMessage });
     setMessages((prev) => [{ isSelf: true, message }, ...prev]);
     setMessage("");
+    handleReply();
   };
 
   return (
@@ -256,11 +253,7 @@ const Game = () => {
                   </div>
                 ) : (
                   <div className="text-9xl text-[#ccc]">
-                    {newOpponentChoices.length > 0 ? (
-                      <ion-icon name="lock-closed"></ion-icon>
-                    ) : (
-                      <ion-icon name="lock-open"></ion-icon>
-                    )}
+                    <ion-icon name="lock-open"></ion-icon>
                   </div>
                 )}
               </div>
@@ -298,7 +291,7 @@ const Game = () => {
               {messages.map((item, index) => (
                 <div
                   key={index}
-                  className={`px-4 py-2 border w-fit max-w-[15rem] text-ellipsis overflow-auto ${
+                  className={`px-4 py-2 border max-w-[15rem] w-fit text-ellipsis overflow-auto ${
                     item.isSelf ? "self-end border-slate-700" : "bg-slate-700 text-white"
                   }`}
                 >
@@ -326,4 +319,4 @@ const Game = () => {
   );
 };
 
-export default Game;
+export default Computer;
