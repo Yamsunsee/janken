@@ -216,7 +216,13 @@ const Game = () => {
             </div>
             <div className="grid grid-cols-2 relative">
               <div className="p-2 text-4xl whitespace-nowrap bg-white uppercase absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                {isLock ? (isShow ? "You " + turnResult : "Waiting for the result") : "Lock your choice"}
+                {isLock
+                  ? isShow
+                    ? turnResult === "draw"
+                      ? "Draw"
+                      : "You " + turnResult
+                    : "Waiting for the result"
+                  : "Lock your choice"}
               </div>
               {isShow ? (
                 <div
