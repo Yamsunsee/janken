@@ -9,9 +9,11 @@ import {
   matchedAccept,
   matchedDecline,
   tryToMatch,
+  delay,
 } from "./functions.js";
 
-const matching = (io) => {
+const matching = async (io) => {
+  await delay(5000);
   const response = tryToMatch();
   if (response) {
     const [first, second] = response;
@@ -29,12 +31,10 @@ const socket = (io) => {
       } else {
         io.emit("users", usersGet());
       }
-      console.log(usersGet());
     });
     socket.on("leave", (name) => {
       usersRemove(name);
       io.emit("users", usersGet());
-      console.log(usersGet());
     });
 
     socket.on("queue-add", (name) => {

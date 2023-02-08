@@ -82,6 +82,10 @@ const tryToMatch = () => {
   }
 };
 
+const delay = (duration) => {
+  return new Promise((resolve) => setTimeout(resolve, duration));
+};
+
 export {
   usersGet,
   usersGetSockedId,
@@ -93,4 +97,5 @@ export {
   matchedAccept,
   matchedDecline,
   tryToMatch,
+  delay,
 };
