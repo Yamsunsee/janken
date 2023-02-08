@@ -83,7 +83,7 @@ const Game = () => {
 
   const handleWaitingLock = () => {
     return setTimeout(() => {
-      if (timer > 0) setTimer((prev) => prev - 1);
+      if (timer > 0) setTimer(timer - 1);
       else handleLock();
     }, 1000);
   };

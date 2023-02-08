@@ -27,8 +27,8 @@ const Queue = () => {
 
   useEffect(() => {
     let timeoutId;
-    if (status === "pending" || status === "accepted") timeoutId = handleCountdown();
-    else if (status === "queueing") timeoutId = handleCountup();
+    if (status === "queueing") timeoutId = handleCountup();
+    else if (status === "pending" || status === "accepted") timeoutId = handleCountdown();
     return () => {
       clearTimeout(timeoutId);
     };
@@ -83,15 +83,14 @@ const Queue = () => {
   };
 
   const handleCountup = () => {
-    if (!status === "queueing") return;
     return setTimeout(() => {
-      setTimer((prev) => prev + 1);
+      setTimer(timer + 1);
     }, 1000);
   };
 
   const handleCountdown = () => {
     return setTimeout(() => {
-      if (timer > 0) setTimer((prev) => prev - 1);
+      if (timer > 0) setTimer(timer - 1);
       else if (isOpponentReady) handleDecline();
       else if (status !== "accepted") handleCancel();
     }, 1000);
