@@ -57,9 +57,16 @@ const App = () => {
             <Route path="/game" element={<Game />} />
             <Route path="/computer" element={<Computer />} />
           </Routes>
+
           <ToastContainer autoClose={3000} pauseOnFocusLoss={false} newestOnTop={true} closeOnClick pauseOnHover />
         </>
       )}
+      <div className="xl:hidden fixed inset-0 z-50 bg-white flex justify-center items-center select-none text-slate-700 font-semibold text-4xl uppercase text-center p-20">
+        <div>
+          <span className="font-bold">Yanken</span> has so much to offer that it requires you to orient your device to
+          landscape or find a larger screen!
+        </div>
+      </div>
     </>
   );
 };
