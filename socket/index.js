@@ -87,6 +87,10 @@ const socket = (io) => {
       const socketId = usersGetSockedId(to);
       io.to(socketId).emit("challenges-remove", from);
     });
+    socket.on("challenges-accept", (name) => {
+      const socketId = usersGetSockedId(name);
+      io.to(socketId).emit("challenges-accept");
+    });
     socket.on("challenges-ready", (name) => {
       const socketId = usersGetSockedId(name);
       io.to(socketId).emit("challenges-ready");
