@@ -26,6 +26,7 @@ const ICONS = {
   draw: { name: "remove-circle", color: "text-blue-400" },
   none: { name: "ellipse", color: "text-[#ccc]" },
 };
+// const PATH = "https://janken-3jej.onrender.com";
 const PATH = "http://localhost:5000";
 const SIGN_UP = `${PATH}/users/signup`;
 const SIGN_IN = `${PATH}/users/signin`;

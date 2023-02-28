@@ -18,6 +18,7 @@ const Challenges = () => {
 
   const handleAcceptChallenges = (name) => {
     setChallenges((prev) => prev.filter((item) => item !== name));
+    socket.emit("challenges-accept", name);
     dispatch({ type: "CHANGE_OPPONENT", payload: { name } });
     navigate("/challenge");
   };

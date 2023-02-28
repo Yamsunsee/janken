@@ -14,7 +14,8 @@ const AddFriends = () => {
       event.target.value = "";
       if (!isValidData(name)) return toast.error("Your friend's name is invalid!");
       else if (name === self.name) return toast.error("Is that you?");
-      else if (friends.includes(name.toLowerCase())) return toast.error(name + " has already been your friend!");
+      else if (friends.map((friend) => friend.name).includes(name.toLowerCase()))
+        return toast.error(name + " has already been your friend!");
       setLoading(true);
       try {
         const response = await addInvitations(self._id, name);
@@ -31,7 +32,7 @@ const AddFriends = () => {
 
   return (
     <div>
-      <div className="flex items-center justify-between px-8 pt-8 pb-2 text-[#ccc]">
+      <div className="flex items-center justify-between px-8 pt-4 pb-2 text-[#ccc]">
         <div className={`italic ${isShow ? "text-slate-700" : "text-[#ccc]"}`}>Friends</div>
         <div className="flex items-center cursor-pointer hover:text-slate-700">
           {isShow ? (

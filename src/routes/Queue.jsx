@@ -1,18 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import useTimer from "../hooks/useTimer";
 import { useStore } from "../store";
+import { delay, getTimerText } from "../utils";
 
 const Queue = () => {
   const navigate = useNavigate();
   const [{ socket, self, opponent, status }, dispatch] = useStore();
-  const [timer, setTimer] = useState(0);
   const [isOpponentReady, setOpponentReady] = useState(false);
-
-  const timerText = useMemo(() => {
-    const seconds = timer % 60;
-    const minutes = (timer - seconds) / 60;
-    return `${minutes < 10 ? "0" + minutes : minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
-  }, [timer]);
+  const [timerCU, isRunningCU, startTimerCU, stopTimerCU] = useTimer(0);
+  const [timerCD, isRunningCD, isTimeUpCD, startTimerCD, stopTimerCD] = useTimer(10, true);
 
   const title = useMemo(() => {
     switch (status) {
@@ -26,25 +23,38 @@ const Queue = () => {
   }, [status]);
 
   useEffect(() => {
-    let timeoutId;
-    if (status === "queueing") timeoutId = handleCountup();
-    else if (status === "pending" || status === "accepted") timeoutId = handleCountdown();
-    return () => {
-      clearTimeout(timeoutId);
-    };
-  }, [timer]);
+    switch (status) {
+      case "queueing":
+        stopTimerCD();
+        startTimerCU();
+        break;
+
+      case "pending":
+      case "accepted":
+        startTimerCD();
+        break;
+
+      default:
+        stopTimerCU();
+        stopTimerCD();
+    }
+  }, [status]);
+
+  useEffect(() => {
+    if (!isTimeUpCD) return;
+    if (isOpponentReady) handleDecline();
+    else if (status !== "accepted") handleCancel();
+  }, [isTimeUpCD]);
 
   useEffect(() => {
     socket.on("matched", (name) => {
       dispatch({ type: "CHANGE_OPPONENT", payload: { name } });
       dispatch({ type: "CHANGE_STATUS", payload: "pending" });
-      setTimer(15);
     });
     socket.on("decline", () => {
       setOpponentReady(false);
       dispatch({ type: "CHANGE_STATUS", payload: "queueing" });
       dispatch({ type: "CHANGE_OPPONENT", payload: {} });
-      setTimer(1);
     });
     socket.on("ready", () => {
       setOpponentReady(true);
@@ -58,7 +68,6 @@ const Queue = () => {
   const handleStart = () => {
     socket.emit("queue-add", self.name);
     dispatch({ type: "CHANGE_STATUS", payload: "queueing" });
-    setTimer(1);
   };
 
   const handleCancel = () => {
@@ -80,20 +89,6 @@ const Queue = () => {
     socket.emit("queue-decline", self.name);
     dispatch({ type: "CHANGE_STATUS", payload: "idle" });
     dispatch({ type: "CHANGE_OPPONENT", payload: {} });
-  };
-
-  const handleCountup = () => {
-    return setTimeout(() => {
-      setTimer(timer + 1);
-    }, 1000);
-  };
-
-  const handleCountdown = () => {
-    return setTimeout(() => {
-      if (timer > 0) setTimer(timer - 1);
-      else if (isOpponentReady) handleDecline();
-      else if (status !== "accepted") handleCancel();
-    }, 1000);
   };
 
   const handleBack = () => {
@@ -120,12 +115,17 @@ const Queue = () => {
         </div>
       </div>
       <div className="grid grid-cols-[1fr_24rem_1fr]">
-        <div className="border-r flex justify-center items-center text-4xl">{self.name}</div>
+        <div className="border-r flex justify-center items-center text-3xl 2xl:text-4xl">{self.name}</div>
         <div className="flex flex-col justify-between p-8 items-center">
-          <div className="text-4xl uppercase text-center">{title}</div>
-          {status !== "idle" && (
-            <div className={`timer ${opponent.name ? "countdown" : "countup"}`}>
-              <div className="timer-text">{timerText}</div>
+          <div className="text-3xl 2xl:text-4xl uppercase text-center">{title}</div>
+          {isRunningCU && !isRunningCD && (
+            <div className="timer countup">
+              <div className="timer-text">{timerCU}</div>
+            </div>
+          )}
+          {isRunningCD && (
+            <div className="timer countdown">
+              <div className="timer-text">{timerCD}</div>
             </div>
           )}
           {status === "accepted" && (
@@ -159,7 +159,9 @@ const Queue = () => {
             </div>
           )}
         </div>
-        <div className="border-l flex flex-col justify-center items-center text-4xl">{opponent.name || "..."}</div>
+        <div className="border-l flex flex-col justify-center items-center text-3xl 2xl:text-4xl">
+          {opponent.name || "..."}
+        </div>
       </div>
     </div>
   );

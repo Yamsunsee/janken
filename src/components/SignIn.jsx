@@ -68,9 +68,9 @@ const SignIn = ({ toggle }) => {
   return (
     <div className="p-8 flex items-center">
       <form onSubmit={handleSignIn} className="flex flex-col gap-8 w-full">
-        <div className="text-5xl font-bold">Sign in</div>
+        <div className="text-4xl 2xl:text-5xl font-bold">Sign in</div>
         <div>
-          <div>
+          <div className="text-sm 2xl:text-base">
             Username <span className="text-red-500">*</span>
           </div>
           <input
@@ -79,11 +79,11 @@ const SignIn = ({ toggle }) => {
             type="text"
             value={name}
             onChange={handleChangeName}
-            className="focus:outline-none border border-slate-700 w-full px-4 py-2 mt-2"
+            className="focus:outline-none border border-slate-700 w-full p-2 2xl:px-4 2xl:py-2 mt-2"
           />
         </div>
         <div>
-          <div>
+          <div className="text-sm 2xl:text-base">
             Password <span className="text-red-500">*</span>
           </div>
           <input
@@ -91,7 +91,7 @@ const SignIn = ({ toggle }) => {
             type="password"
             value={password}
             onChange={handleChangePassword}
-            className="focus:outline-none border border-slate-700 w-full px-4 py-2 mt-2"
+            className="focus:outline-none border border-slate-700 w-full p-2 2xl:px-4 2xl:py-2 mt-2"
           />
         </div>
         <div>

@@ -45,10 +45,10 @@ const Friend = ({ friend, onlineUsers }) => {
         <ion-icon name="options"></ion-icon>
         {isShow && (
           <div className="options-items">
-            {pathname !== "/challenge" && friend.name !== opponent.name && status === "idle" && (
+            {pathname !== "/challenge" && onlineUsers.includes(friend.name) && !opponent.name && status === "idle" && (
               <div
                 onClick={handleChallenges}
-                className="flex justify-between items-center px-4 py-2  italic text-[#ccc] hover:text-slate-700 cursor-pointer"
+                className="flex justify-between items-center px-4 py-2 italic text-[#ccc] hover:text-slate-700 cursor-pointer"
               >
                 <div>Challenge</div>
                 <div className="flex items-center">
@@ -58,7 +58,7 @@ const Friend = ({ friend, onlineUsers }) => {
             )}
             <div
               onClick={handleUnfriends}
-              className="flex justify-between items-center px-4 py-2  italic text-[#ccc] hover:text-slate-700 cursor-pointer"
+              className="flex justify-between items-center px-4 py-2 italic text-[#ccc] hover:text-slate-700 cursor-pointer"
             >
               <div>Unfriend</div>
               <div className="flex items-center">

@@ -1,6 +1,16 @@
 import axios from "axios";
 import { SIGN_UP, SIGN_IN, INVITATIONS, FRIENDS, CHOICES } from "./constants.js";
 
+const delay = (duration) => {
+  return new Promise((resolve) => setTimeout(resolve, duration));
+};
+
+const getTimerText = (timer) => {
+  const seconds = timer % 60;
+  const minutes = (timer - seconds) / 60;
+  return `${minutes < 10 ? "0" + minutes : minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
+};
+
 const isValidData = (...params) => {
   const regex = /^[a-zA-Z0-9]{3,}$/;
   return params.every((param) => regex.test(param));
@@ -112,6 +122,8 @@ const removeFriends = async (userId, recipientId) => {
 };
 
 export {
+  delay,
+  getTimerText,
   isValidData,
   getResults,
   signUp,

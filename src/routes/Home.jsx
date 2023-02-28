@@ -56,7 +56,10 @@ const Home = () => {
         </div>
       </div>
       <div className="flex flex-col justify-center items-center overflow-hidden">
-        <div onClick={handleClick} className="cursor-pointer flex flex-col justify-center items-center">
+        <div
+          onClick={handleClick}
+          className="transform scale-75 2xl:scale-100 cursor-pointer flex flex-col justify-center items-center"
+        >
           {LINES.map((line, index) => (
             <div className="line" key={index}>
               {line.split(" ").map((piece, index) => {

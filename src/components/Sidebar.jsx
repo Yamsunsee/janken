@@ -20,7 +20,7 @@ const Sidebar = () => {
   return (
     <div className="border-l flex flex-col justify-between">
       <div>
-        <div className="flex justify-between items-center p-8 h-[7.75rem] border-b">
+        <div className="flex justify-between items-center p-8 h-[6.6875rem] 2xl:h-[7.75rem] border-b">
           <div className="flex items-center">
             <div className="flex justify-center items-center text-4xl">
               <ion-icon name="person-circle"></ion-icon>

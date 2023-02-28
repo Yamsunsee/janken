@@ -43,6 +43,15 @@ const Challenge = () => {
         <div className="border-r flex justify-center items-center flex-col text-4xl">{opponent.name || "..."}</div>
         <div className="flex flex-col justify-between p-8 items-center gap-4">
           <div className="text-4xl uppercase text-center">Challenge room</div>
+          {isReady ? (
+            <div className="italic">
+              Waiting for <span className="font-bold">{opponent.name}</span> to start!
+            </div>
+          ) : (
+            <div className="italic">
+              <span className="font-bold">{opponent.name}</span> is waiting for you!
+            </div>
+          )}
           <div onClick={handleReady} className={`button ${!opponent.name || isReady ? "disabled" : null}`}>
             Ready
           </div>

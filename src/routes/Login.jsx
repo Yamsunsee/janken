@@ -14,7 +14,7 @@ const Login = () => {
           }`}
         >
           <div
-            className={`absolute text-3xl transform transition-all ${
+            className={`absolute text-2xl 2xl:text-3xl transform transition-all ${
               isSignUp ? "-translate-y-20 opacity-0" : "-translate-y-3/4 delay-300"
             }`}
           >
@@ -29,7 +29,7 @@ const Login = () => {
             Sign up
           </div>
           <div
-            className={`absolute transform transition-all text-3xl ${
+            className={`absolute transform transition-all text-2xl 2xl:text-3xl ${
               isSignUp ? "-translate-y-3/4 delay-300" : "-translate-y-20 opacity-0"
             }`}
           >
