@@ -207,7 +207,7 @@ const Game = () => {
                 <div className="vertical-text text-sm uppercase text-[#ccc] text-center mr-1">Last choice</div>
                 <div className="w-24 2xl:w-32 aspect-square rounded-full border border-[#ccc] overflow-hidden">
                   {lastChoice !== "none" ? (
-                    <img className="w-20 2xl:w-28 h-full object-contain" src={`./public/${lastChoice}.png`} />
+                    <img className="w-20 2xl:w-28 h-full object-contain" src={`./${lastChoice}.png`} />
                   ) : (
                     <div className="flex h-full justify-center items-center text-6xl text-[#ccc]">
                       <ion-icon name="ban"></ion-icon>
@@ -268,13 +268,13 @@ const Game = () => {
               )}
               <div className="h-full border-r border-[#ccc] flex items-center">
                 <div className="h-32 2xl:h-40 overflow-hidden">
-                  <img className="h-full" src={`./public/${choice}.png`} />
+                  <img className="h-full" src={`./${choice}.png`} />
                 </div>
               </div>
               <div className="h-full flex items-center justify-center flip-image">
                 {isShow ? (
                   <div className="h-32 2xl:h-40 flex justify-start w-full">
-                    <img className="h-full" src={`./public/${lastChoice}.png`} />
+                    <img className="h-full" src={`./${lastChoice}.png`} />
                   </div>
                 ) : (
                   <div className="text-8xl 2xl:text-9xl text-[#ccc]">
@@ -303,7 +303,7 @@ const Game = () => {
                         : null
                     }`}
                   >
-                    <img className="w-28 h-full object-contain" src={`./public/${name}.png`} />
+                    <img className="w-28 h-full object-contain" src={`./${name}.png`} />
                   </div>
                 ))}
               </div>
